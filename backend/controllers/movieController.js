@@ -2,15 +2,26 @@ const Movie = require("../models/Movie");
 
 const ErrorHandler = require("../utils/errorHandler");
 const catchAsyncErrors = require("../middlewares/catchAsyncErrors");
+const APIFeatures = require("../utils/apiFeatures");
 
 exports.getMovies = catchAsyncErrors(async (req, res, next) => {
-  const movies = await Movie.find();
 
-  const moviesCount = await Movie.countDocuments();
+  const movieCount=await Movie.countDocuments()
+   const resPerPage = 1;
+
+  const apiFeatures = new APIFeatures(Movie.find(), req.query)
+  .search()
+  .filter()
+  .pagination(resPerPage)
+
+  let movies = await apiFeatures.query;
+      let filteredMoviesCount = movies.length;
+
 
   res.status(200).json({
     success: true,
-    moviesCount,
+    movieCount,
+    filteredMoviesCount,
     message: "This is all movies from DB",
     movies,
   });
@@ -28,7 +39,7 @@ exports.createMovie = catchAsyncErrors(async (req, res, next) => {
   });
 });
 
-// Get single moive details   =>   /api/v1/movies/:id
+// Get single movie details   =>   /api/v1/movies/:id
 exports.getSingleMovie = catchAsyncErrors(async (req, res, next) => {
   const movie = await Movie.findById(req.params.id);
 
