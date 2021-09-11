@@ -1,6 +1,9 @@
 const Movie = require("../models/Movie");
 
-exports.getMovies = async (req, res, next) => {
+const ErrorHandler = require("../utils/errorHandler");
+const catchAsyncErrors = require("../middlewares/catchAsyncErrors");
+
+exports.getMovies = catchAsyncErrors(async (req, res, next) => {
   const movies = await Movie.find();
 
   const moviesCount = await Movie.countDocuments();
@@ -11,49 +14,51 @@ exports.getMovies = async (req, res, next) => {
     message: "This is all movies from DB",
     movies,
   });
-};
+});
 
-exports.createMovie = async (req, res, next) => {
+exports.createMovie = catchAsyncErrors(async (req, res, next) => {
   console.log(req.body);
-  try {
-    const newMovie = await Movie.create(req.body);
 
-    res.status(201).json({
-      success: true,
-      message: "movie created",
-      movie: newMovie,
-    });
-  } catch (err) {
-    console.log(err);
-    res.status(500).json(err);
-  }
-};
+  const newMovie = await Movie.create(req.body);
+
+  res.status(201).json({
+    success: true,
+    message: "movie created",
+    movie: newMovie,
+  });
+});
 
 // Get single moive details   =>   /api/v1/movies/:id
-exports.getSingleMovie = async (req, res, next) => {
+exports.getSingleMovie = catchAsyncErrors(async (req, res, next) => {
   const movie = await Movie.findById(req.params.id);
 
+  // if (!movie) {
+  //   res.status(500).json({
+  //     message: "Brak filmu o takim id.",
+  //   });
+  // }
   if (!movie) {
-    res.status(500).json({
-      message: "Brak filmu o takim id.",
-    });
+    return next(new ErrorHandler("Movie not found", 404));
   }
 
   res.status(200).json({
     success: true,
     movie,
   });
-};
+});
 
 // Update Movie   =>   /api/v1/admin/movie/:id
-exports.updateMovie = async (req, res, next) => {
+exports.updateMovie = catchAsyncErrors(async (req, res, next) => {
   let movie = await Movie.findById(req.params.id);
 
+  // if (!movie) {
+  //   res.status(404).json({
+  //     success: false,
+  //     message: "Brak filmu o takim id.",
+  //   });
+  // }
   if (!movie) {
-    res.status(404).json({
-      success: false,
-      message: "Brak filmu o takim id.",
-    });
+    return next(new ErrorHandler("Movie not found", 404));
   }
 
   movie = await Movie.findByIdAndUpdate(req.params.id, req.body, {
@@ -67,29 +72,20 @@ exports.updateMovie = async (req, res, next) => {
     message: "Uaktualniono film",
     movie,
   });
-};
-
-
+});
 
 // Delete Movie   =>   /api/v1/admin/movie/:id
-exports.deleteMovie = async (req, res, next) => {
+exports.deleteMovie = catchAsyncErrors(async (req, res, next) => {
+  const movie = await Movie.findById(req.params.id);
 
-    const movie = await Movie.findById(req.params.id);
+  if (!movie) {
+    return next(new ErrorHandler("Movie not found", 404));
+  }
 
-     if (!movie) {
-       res.status(404).json({
-         success: false,
-         message: "Brak filmu o takim id.",
-       });
-     }
+  await movie.remove();
 
-   
-
-    await movie.remove();
-
-    res.status(200).json({
-        success: true,
-        message: 'Movie is deleted.'
-    })
-
-}
+  res.status(200).json({
+    success: true,
+    message: "Movie is deleted.",
+  });
+});
