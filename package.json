@@ -4,10 +4,15 @@
   "description": "Netflix app",
   "main": "backend/server.js",
   "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "body-parser": "^1.19.0",
     "colors": "^1.4.0",
+    "cookie-parser": "^1.4.5",
     "dotenv": "^10.0.0",
     "express": "^4.17.1",
-    "mongoose": "^6.0.5"
+    "jsonwebtoken": "^8.5.1",
+    "mongoose": "^6.0.5",
+    "validator": "^13.6.0"
   },
   "devDependencies": {
     "nodemon": "^2.0.6"
@@ -16,8 +21,16 @@
     "start": "nodemon server.js",
     "dev": "SET NODE_ENV=DEVELOPMENT& nodemon backend/server",
     "prod": "SET NODE_ENV=PRODUCTION& nodemon backend/server",
-    "delMov":"node backend/utils/deleteAllMovies"
+    "delMov": "node backend/utils/deleteAllMovies"
   },
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/login101i/Netflix_backend_frontend.git"
+  },
+  "bugs": {
+    "url": "https://github.com/login101i/Netflix_backend_frontend/issues"
+  },
+  "homepage": "https://github.com/login101i/Netflix_backend_frontend#readme"
 }
