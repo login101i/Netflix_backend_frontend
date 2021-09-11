@@ -15,7 +15,8 @@
   "scripts": {
     "start": "nodemon server.js",
     "dev": "SET NODE_ENV=DEVELOPMENT& nodemon backend/server",
-    "prod": "SET NODE_ENV=PRODUCTION& nodemon backend/server"
+    "prod": "SET NODE_ENV=PRODUCTION& nodemon backend/server",
+    "delMov":"node backend/utils/deleteAllMovies"
   },
   "author": "",
   "license": "ISC"
