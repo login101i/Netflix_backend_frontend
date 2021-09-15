@@ -37,7 +37,18 @@ module.exports = (err, req, res, next) => {
       error = new ErrorHandler(message, 400);
     }
 
- 
+    // Handling wrong JWT error
+    if (err.name === "JsonWebTokenError") {
+      const message = "JSON Web Token wygasł. Spróbuj ponownie";
+      error = new ErrorHandler(message, 400);
+    }
+
+    // Handling Expired JWT error
+    if (err.name === "TokenExpiredError") {
+      const message = "JSON Web Token wygasł. Spróbuj ponownie";
+      error = new ErrorHandler(message, 400);
+    }
+
     res.status(error.statusCode || 500).json({
       success: false,
       message: error.message || "Wewnętrzny błąd serwera :)",

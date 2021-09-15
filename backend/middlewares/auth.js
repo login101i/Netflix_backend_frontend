@@ -16,6 +16,7 @@ exports.isAuthenticatedUser = catchAsyncErrors(async (req, res, next) => {
 
   const decoded = jwt.verify(tokenes, process.env.JWT_SECRET);
   req.user = await User.findById(decoded.id);
+  console.log(decoded)
 
   console.log("To jest user");
   console.log(req.user);
@@ -23,18 +24,33 @@ exports.isAuthenticatedUser = catchAsyncErrors(async (req, res, next) => {
   next();
 });
 
+
+
 //   const decoded = jwt.verify(token, process.env.JWT_SECRET);
 //   req.user = await User.findById(decoded.id);
 
 //   next();
 // });
 
+
+
 // // Handling users roles
 // exports.authorizeRoles = (...roles) => {
 //   return (req, res, next) => {
 //     if (!roles.includes(req.user.role)) {
-//       return next(new ErrorHandler(` (${req.user.role}) nie jest upoważniony do wglądu tych plików`, 403));
+//       return next(new ErrorHandler(` (${req.user.isAdmin}) nie jest upoważniony do wglądu tych plików`, 403));
 //     }
 //     next();
 //   };
 // };
+
+
+// // Handling users roles
+exports.authorizeRoles = () => {
+  return (req, res, next) => {
+    if (!req.user.isAdmin) {
+      return next(new ErrorHandler(`Nie jestes upoważniony do wglądu tych plików`, 403));
+    }
+    next();
+  };
+};
