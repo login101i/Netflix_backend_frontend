@@ -1,0 +1,90 @@
+.register {
+  width: 100vw;
+  height: 100vh;
+  background-image: url("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQwc3BoIZ8h7VSPeB026jePQ4wPli1J8t46fJ-RL38tjyrmtiBVRsMkHlK95er4p-NL_Mo&usqp=CAU");
+  background-repeat: no-repeat;
+  background-size: cover;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  .top {
+    border: 0.3px solid tomato;
+    padding: 20px 40px;
+    border-radius: 20px;
+    -webkit-box-shadow: 0px 1px 21px 9px rgba(255, 255, 255, 0.72);
+    box-shadow: 0px 1px 21px 9px rgba(255, 255, 255, 0.72);
+    background: linear-gradient(to bottom, rgb(255, 255, 255), rgb(133, 132, 132) 90%);
+
+    .wrapper {
+      display: flex;
+      flex-direction: column;
+      padding: 10px;
+      align-items: center;
+
+      img {
+        width: 200px;
+        margin-bottom: 20px;
+      }
+      button {
+        border: none;
+        padding: 5px 25px;
+        color: tomato;
+        background-color: white;
+        border-radius: 4px;
+        font-size: 25px;
+        font-weight: 600;
+        cursor: pointer;
+      }
+    }
+    .container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      margin-bottom: 30px;
+      color: white;
+      h1 {
+        font-size: 40px;
+      }
+      h2 {
+        font-size: 25px;
+      }
+      span {
+        font-size: 14px;
+        margin-top: 5px;
+      }
+    }
+    .input {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      input {
+        padding: 5px;
+        border: none;
+        margin-bottom: 10px;
+        padding: 10px 30px;
+        border-radius: 4px;
+        text-align: center;
+        outline: none;
+        font-size: 20px;
+
+        &::placeholder {
+          color: tomato;
+        }
+      }
+      .registerButton {
+        border: none;
+        padding: 5px 25px;
+        color: tomato;
+        background-color: white;
+        border-radius: 4px;
+        font-size: 25px;
+        font-weight: 600;
+        cursor: pointer;
+        margin-top: 10px;
+      }
+    }
+  }
+}

@@ -1,0 +1,53 @@
+.Lcontainer {
+  display: flex;
+  justify-content: space-between;
+  align-items: left;
+  margin-top: 10px;
+
+  position: relative;
+  transform: translatex(0px);
+  flex-direction: column;
+  margin-top: 10px;
+ 
+  .containerTitle {
+    font-size: 24px;
+    font-weight: 600;
+    margin-left: 50px;
+    margin: 10px 50px;
+  }
+  .wrapper {
+    flex-direction: row;
+
+    .sliderIcon {
+
+      font-size: 53px;
+      position: absolute;
+      transition: 0.3s;
+      top: 50%;
+      transform: translate(0%, -30%);
+      -ms-transform: translate(0%, -50%);
+      z-index: 2;
+      cursor: pointer;
+      color: #e50914;
+      &.left {
+        left: -10px;
+        transition: 0.5s;
+      }
+      &.right {
+        right: 10px;
+      }
+      &:hover {
+        font-size: 70px;
+      }
+    }
+  }
+
+  .listContainer {
+    width: max-content;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 0px 35px;
+    transition: 0.4s all ease-in-out;
+  }
+}
