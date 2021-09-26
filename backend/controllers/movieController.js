@@ -5,18 +5,13 @@ const catchAsyncErrors = require("../middlewares/catchAsyncErrors");
 const APIFeatures = require("../utils/apiFeatures");
 
 exports.getMovies = catchAsyncErrors(async (req, res, next) => {
+  const movieCount = await Movie.countDocuments();
+  const resPerPage = 5;
 
-  const movieCount=await Movie.countDocuments()
-   const resPerPage = 1;
-
-  const apiFeatures = new APIFeatures(Movie.find(), req.query)
-  .search()
-  .filter()
-  .pagination(resPerPage)
+  const apiFeatures = new APIFeatures(Movie.find(), req.query).search().filter().pagination(resPerPage);
 
   let movies = await apiFeatures.query;
-      let filteredMoviesCount = movies.length;
-
+  let filteredMoviesCount = movies.length;
 
   res.status(200).json({
     success: true,
@@ -53,8 +48,8 @@ exports.getSingleMovie = catchAsyncErrors(async (req, res, next) => {
   }
 
   res.status(200).json({
-    success: true,
-    movie,
+  
+    movie
   });
 });
 
@@ -99,4 +94,19 @@ exports.deleteMovie = catchAsyncErrors(async (req, res, next) => {
     success: true,
     message: "Movie is deleted.",
   });
+});
+
+exports.randomMovie = catchAsyncErrors(async (req, res) => {
+  const type = req.query.type;
+  let movie;
+  try {
+    if (type === "series") {
+      movie = await Movie.aggregate([{ $match: { isSeries: true } }, { $sample: { size: 1 } }]);
+    } else {
+      movie = await Movie.aggregate([{ $match: { isSeries: false } }, { $sample: { size: 1 } }]);
+    }
+    res.status(200).json(movie);
+  } catch (err) {
+    res.status(500).json(err);
+  }
 });

@@ -1,45 +1,73 @@
-import { useState } from "react";
+import React from "react";
+
+import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
+
 import "./listItem.scss";
 
-import PlayArrowIcon from "@material-ui/icons/PlayArrow";
-import AddIcon from "@material-ui/icons/Add";
-import ThumbDownIcon from "@material-ui/icons/ThumbDown";
-import ThumbUpIcon from "@material-ui/icons/ThumbUp";
 
-const ListItem = () => {
+import PlayArrowIcon from "@mui/icons-material/PlayArrow";
+import AddIcon from "@mui/icons-material/Add";
+import ThumbDownIcon from "@mui/icons-material/ThumbDown";
+// import ThumbUpIcon from "@material-ui/icons/ThumbUp";
+import ThumbUpIcon from "@mui/icons-material/ThumbUp";
+
+import axios from "axios";
+
+const ListItem = ({ item, index, accessToken }) => {
   const [isHovered, setIsHovered] = useState(false);
   const [movie, setMovie] = useState({});
+  // console.log("poniżej movie");
 
   const trailer = "https://www.w3schools.com/html/mov_bbb.mp4";
 
-  const index = 1;
+  // const index = 1;
+
+  useEffect(() => {
+    const getMovie = async () => {
+      try {
+        const getId = await axios.get("/admin/movie/" + item, {
+          headers: {
+            tokenes: accessToken,
+          },
+        });
+        setMovie(getId.data.movie);
+        console.log(getId.data.movie);
+      } catch (err) {
+        console.log(err);
+      }
+    };
+    getMovie();
+  }, [item]);
 
   return (
     <>
-      <div className="listItem" onMouseEnter={() => setIsHovered(true)} onMouseLeave={() => setIsHovered(false)} style={{ left: isHovered && index * 325 - 250 + index * 2.5 }}>
-        <img src="https://images.pexels.com/photos/6899260/pexels-photo-6899260.jpeg?auto=compress&cs=tinysrgb&dpr=2&w=500" alt="" />
-        {isHovered && (
-          <>
-            <video src={trailer} loop autoPlay={true} muted={true} />
+      <Link to={{ pathname: "/watch", movie: movie }}>
+        <div className="listItem" onMouseEnter={() => setIsHovered(true)} onMouseLeave={() => setIsHovered(false)} style={{ left: isHovered && index * 325 - 250 + index * 2.5 }}>
+          <img src={movie.img} alt="" />
+          {isHovered && (
+            <>
+              <video src={movie.trailer} loop autoPlay={true} muted={true} />
 
-            <div className="itemInfo">
-              <div className="icons">
-                <PlayArrowIcon className="icon" />
-                <AddIcon className="icon" />
-                <ThumbDownIcon className="icon" />
-                <ThumbUpIcon className="icon" />
+              <div className="itemInfo">
+                <div className="icons">
+                  <PlayArrowIcon className="icon" />
+                  <AddIcon className="icon" />
+                  <ThumbDownIcon className="icon" />
+                  <ThumbUpIcon className="icon" />
+                </div>
+                <div className="itemInfoTop">
+                  <span>{movie.duration}</span>
+                  <div className="limit">{item.limit}</div>
+                  <span>{movie.year}</span>
+                </div>
+                <div className="desc">{movie.desc} .</div>
               </div>
-              <div className="itemInfoTop">
-                <span>90min</span>
-                <div className="limit">12</div>
-                <span>12122</span>
-              </div>
-              <div className="desc">desc sdfsdfsdfsdfsdfsdf.</div>
-            </div>
-            <div className="genre">genre</div>
-          </>
-        )}
-      </div>
+              <div className="genre">{movie.genre}</div>
+            </>
+          )}
+        </div>
+      </Link>
     </>
   );
 };

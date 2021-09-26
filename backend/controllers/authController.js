@@ -212,64 +212,92 @@ exports.updateProfile = catchAsyncErrors(async (req, res, next) => {
 
 // Get all users   =>   /api/v1/admin/users
 exports.allUsers = catchAsyncErrors(async (req, res, next) => {
-  const users = await User.find();
+  // limit to 10 newest Users
+  const query = req.query.new;
+
+  const users = query ? await User.find().sort({ _id: -1 }).limit(3) : await User.find();
+  const numberOfUsers = users.length;
 
   res.status(200).json({
     success: true,
     message: "all users below: ",
+    numberOfUsers,
     users,
   });
 });
 
-
 // Get user details   =>   /api/v1/admin/user/:id
 exports.getUserDetails = catchAsyncErrors(async (req, res, next) => {
-    const user = await User.findById(req.params.id);
+  const user = await User.findById(req.params.id);
 
-    if (!user) {
-        return next(new ErrorHandler(`User does not found with id: ${req.params.id}`))
-    }
+  if (!user) {
+    return next(new ErrorHandler(`User does not found with id: ${req.params.id}`));
+  }
 
-    res.status(200).json({
-        success: true,
-        user
-    })
-})
+  res.status(200).json({
+    success: true,
+    user,
+  });
+});
 
 // Update user profile   =>   /api/v1/admin/user/:id
 exports.updateUser = catchAsyncErrors(async (req, res, next) => {
-    const newUserData = {
-        name: req.body.name,
-        email: req.body.email,
-        role: req.body.role
-    }
+  const newUserData = {
+    name: req.body.name,
+    email: req.body.email,
+    role: req.body.role,
+  };
 
-    const user = await User.findByIdAndUpdate(req.params.id, newUserData, {
-        new: true,
-        runValidators: true,
-        useFindAndModify: false
-    })
+  const user = await User.findByIdAndUpdate(req.params.id, newUserData, {
+    new: true,
+    runValidators: true,
+    useFindAndModify: false,
+  });
 
-    res.status(200).json({
-        success: true
-    })
-})
-
-
+  res.status(200).json({
+    success: true,
+  });
+});
 
 // Delete user   =>   /api/v1/admin/user/:id
 exports.deleteUser = catchAsyncErrors(async (req, res, next) => {
-    const user = await User.findById(req.params.id);
+  const user = await User.findById(req.params.id);
 
-    if (!user) {
-        return next(new ErrorHandler(`User does not found with id: ${req.params.id}`))
-    }
+  if (!user) {
+    return next(new ErrorHandler(`User does not found with id: ${req.params.id}`));
+  }
+
+  await user.remove();
+
+  res.status(200).json({
+    success: true,
+    message: "Użytkownik został usunięty.",
+  });
+});
+
+//GET USER STATS
+exports.getStats=catchAsyncErrors(async (req, res, next) => {
+  const today = new Date();
+  const latYear = today.setFullYear(today.setFullYear() - 1);
+
+  try {
+    const data = await User.aggregate([
+      {
+        $project: {
+          month: { $month: "$createdAt" },
+        },
+      },
+      {
+        $group: {
+          _id: "$month",
+          total: { $sum: 1 },
+        },
+      },
+    ]);
+    res.status(200).json(data)
+  } catch (err) {
+    res.status(500).json(err);
+  }
+});
 
 
-    await user.remove();
-
-    res.status(200).json({
-        success: true,
-        message:"Użytkownik został usunięty."
-    })
-})

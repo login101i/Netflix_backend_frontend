@@ -1,12 +1,13 @@
+import React from "react";
+
 import { useRef, useState } from "react";
 
 import "./list.scss";
-import ListItem from '../listItem/ListItem'
+import ListItem from "../listItem/ListItem";
 
-import ChevronRightIcon from "@material-ui/icons/ChevronRight";
-import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
-
-const List = () => {
+import ChevronRightIcon from "@mui/icons-material/ChevronRight";
+import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
+const List = ({ list, accessToken }) => {
   const listRef = useRef();
   const [slideNumber, setSlideNumber] = useState(0);
   const [isMoved, setIsMoved] = useState(0);
@@ -25,22 +26,18 @@ const List = () => {
     }
   };
 
+  console.log(list.content)
+
   return (
     <div className="Lcontainer">
-      <div className="containerTitle">list type</div>
+      <div className="containerTitle">{list.title}</div>
 
       <div className="wrapper">
         <ChevronLeftIcon className="sliderIcon left" onClick={() => handleClick("left")} style={{ display: isMoved ? "block" : "none" }} />
         <div className="listContainer" ref={listRef}>
-          <ListItem />
-          <ListItem />
-          <ListItem />
-          <ListItem />
-          <ListItem />
-          <ListItem />
-          <ListItem />
-          <ListItem />
-          <ListItem />
+          {list.content.map((item, index) => (
+            <ListItem item={item} index={index} key={index} accessToken={accessToken} />
+          ))}
         </div>
 
         <ChevronRightIcon className="sliderIcon right" onClick={() => handleClick("right")} />

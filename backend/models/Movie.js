@@ -25,6 +25,7 @@ const MovieSchema = new mongoose.Schema(
 
     img: {
       type: String,
+      default: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRmq1v7TsJ0PaKgcvc5kMmahNYp9tKbFtvdVg&usqp=CAU",
     },
     imgTitle: {
       type: String,
@@ -60,6 +61,10 @@ const MovieSchema = new mongoose.Schema(
     numOfReviews: {
       type: Number,
       default: 0,
+    },
+    duration: {
+      type: Number,
+      default: 100,
     },
 
     reviews: [

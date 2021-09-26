@@ -1,10 +1,30 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import "./featured.scss";
 
-import PlayCircleOutlineIcon from "@material-ui/icons/PlayCircleOutline";
-import InfoIcon from "@material-ui/icons/Info";
+import PlayCircleIcon from "@mui/icons-material/PlayCircle";
+import InfoIcon from "@mui/icons-material/Info";
+import axios from "axios";
 
-const Featured = ({ type }) => {
+const Featured = ({ type, accessToken }) => {
+  const [content, setContent] = useState({});
+
+  useEffect(() => {
+    const getRandomContent = async () => {
+      try {
+        const res = await axios.get(`admin/randomMovie`, {
+          headers: {
+            tokenes: accessToken,
+          },
+        });
+        setContent(res.data[0]);
+        console.log(res.data[0]);
+      } catch (err) {
+        console.log(err);
+      }
+    };
+    getRandomContent();
+  }, [type]);
+
   return (
     <>
       <div className="featured">
@@ -33,11 +53,11 @@ const Featured = ({ type }) => {
         <img src="https://images.pexels.com/photos/6899260/pexels-photo-6899260.jpeg?auto=compress&cs=tinysrgb&dpr=2&w=500" alt="" width="100%" />
 
         <div className="info">
-          <img src="https://images.pexels.com/photos/6899260/pexels-photo-6899260.jpeg?auto=compress&cs=tinysrgb&dpr=2&w=500" alt="" />
+          <img src={content.img} alt="" />
           <span className="des">Lorem ipsum dolor sit, amet consectetur adipisicing elit. Quis, ipsam quo, necessitatibus quos ipsum magni velit iure voluptates officia nisi voluptatum totam sapiente aspernatur, quam adipisci et placeat officiis. Pariatur nulla atque eum!</span>
           <div className="buttons">
             <button className="playIcon">
-              <PlayCircleOutlineIcon />
+              <PlayCircleIcon />
               <span>Play</span>
             </button>
 

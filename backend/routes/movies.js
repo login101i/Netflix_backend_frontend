@@ -1,13 +1,14 @@
 const router = require("express").Router();
 
-const { getMovies, createMovie, getSingleMovie, updateMovie, deleteMovie } = require("../controllers/movieController");
+const { getMovies, createMovie, getSingleMovie, updateMovie, deleteMovie, randomMovie } = require("../controllers/movieController");
 
 const { isAuthenticatedUser, authorizeRoles } = require("../middlewares/auth");
 
-router.get("/movies", isAuthenticatedUser, getMovies);
-router.post("/admin/movie/new", authorizeRoles("admin"), createMovie);
-router.get("/movie/:id", getSingleMovie);
-router.put("/admin/movie/:id", authorizeRoles("admin"), updateMovie);
-router.delete("/admin/movie/:id", authorizeRoles("admin"), deleteMovie);
+router.get("/movies", getMovies);
+router.post("/admin/movie/new", isAuthenticatedUser, authorizeRoles(), createMovie);
+router.get("/admin/movie/:id", isAuthenticatedUser, getSingleMovie);
+router.put("/admin/movie/:id", isAuthenticatedUser, authorizeRoles(), updateMovie);
+router.delete("/admin/movie/:id", isAuthenticatedUser, authorizeRoles(), deleteMovie);
+router.get("/admin/randomMovie", isAuthenticatedUser, randomMovie);
 
 module.exports = router;

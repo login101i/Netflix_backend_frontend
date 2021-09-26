@@ -7,8 +7,7 @@ const catchAsyncErrors = require("./catchAsyncErrors");
 // Checks if user is authenticated or not
 exports.isAuthenticatedUser = catchAsyncErrors(async (req, res, next) => {
   const { tokenes } = req.cookies;
-  console.log(req.cookies);
-  console.log(tokenes);
+ 
 
   if (!tokenes) {
     return next(new ErrorHandler("Najpierw zaloguj się aby uzyskać dostęp do danych.", 401));
@@ -16,10 +15,11 @@ exports.isAuthenticatedUser = catchAsyncErrors(async (req, res, next) => {
 
   const decoded = jwt.verify(tokenes, process.env.JWT_SECRET);
   req.user = await User.findById(decoded.id);
-  console.log(decoded)
+  // console.log("Poniżej decoded")
+  // console.log(decoded)
 
-  console.log("To jest user");
-  console.log(req.user);
+  // console.log("To jest user");
+  // console.log(req.user);
 
   next();
 });
